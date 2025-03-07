@@ -23,7 +23,7 @@ async def app_lifespan(app: FastMCP) -> AsyncIterator[AppContext]:
             pool.return_connection(db)
 
 mcp = FastMCP("tidb", instructions="""
-    you are a tidb database expert, you can help me query, create, and execute sql statements on the tidb database.
+    you are a tidb database expert, you can help me query, create, and execute sql statements in string on the tidb database.
     Notice:
     - use TiDB instead of MySQL syntax for sql statements
     """
@@ -47,6 +47,7 @@ def show_tables(ctx: Context, db_name: str):
 @mcp.tool(
     description="""
     query the tidb database via sql, best practices:
+    - sql is always a string
     - always add LIMIT in the query
     - always add ORDER BY in the query
     """
@@ -80,17 +81,21 @@ def show_create_table(ctx: Context, db_name: str, table: str) -> str:
 @mcp.tool(
     description="""
     execute sql statments on the sepcific database with TiDB, best practices:
+    - sql_stmts is always a string or a list of string
     - always use transaction to execute sql statements
     """
 )
-def db_execute(ctx: Context, db_name: str, sql_stmts: list[str]):
+def db_execute(ctx: Context, db_name: str, sql_stmts: str | list[str]):
     db : DB = ctx.request_context.lifespan_context.db
     try:
         with db.transaction():
             if db_name is not None:
                 db.execute(f"USE {db_name}")
-            for sql in sql_stmts:
-                db.execute(f"{sql}")
+            if isinstance(sql_stmts, str):
+                db.execute(sql_stmts)
+            elif isinstance(sql_stmts, list):
+                for sql in sql_stmts:
+                    db.execute(f"{sql}")
         return "success"
     except Exception as e:
         log.error(f"Error executing database: {e}")

@@ -19,6 +19,10 @@ class DatabaseError(Exception):
 
 def get_ssl_cert_path() -> str:
     """Get SSL certificate path based on operating system"""
+    cert = os.getenv('SSL_CERT_PATH')
+    if cert:
+        return cert
+
     system = platform.system()
     if system == 'Darwin':  # macOS
         return '/private/etc/ssl/cert.pem'
@@ -36,14 +40,14 @@ def get_db_config() -> dict:
             'port': ('DB_PORT', '4000'),
             'user': ('DB_USERNAME', 'root'),
             'password': ('DB_PASSWORD', ''),
-            'database': ('DB_DATABASE', 'test')
+            'database': ('DB_DATABASE', 'test'),
         },
         {
             'host': ('TIDB_HOST', 'localhost'),
             'port': ('TIDB_PORT', '4000'),
             'user': ('TIDB_USERNAME', 'root'),
             'password': ('TIDB_PASSWORD', ''),
-            'database': ('TIDB_DATABASE', 'test')
+            'database': ('TIDB_DATABASE', 'test'),
         }
     ]
 
@@ -67,7 +71,7 @@ class DB:
         password: str = DB_CONFIG['password'],
         database: str = DB_CONFIG['database'],
         ssl_cert: str = get_ssl_cert_path(),
-        max_tries: int = 10
+        max_tries: int = 5
     ):
         self.host = host
         self.port = int(port)
@@ -107,9 +111,9 @@ class DB:
                 self.conn.close()
                 log.debug("Closing existing connection before reconnect")
             
-            log.info("Reconnecting to database %s@%s:%d", self.database, self.host, self.port)
+            log.info("Connecting to database %s@%s:%d", self.database, self.host, self.port)
             self.conn = pymysql.connect(**self._get_connection_params())
-            log.info("Successfully reconnected to database")
+            log.info("Successfully connected to database")
         except pymysql.Error as e:
             log.error("Failed to connect to database: %s", e)
             raise DatabaseError(f"Connection failed: {str(e)}")
