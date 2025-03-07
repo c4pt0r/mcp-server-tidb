@@ -20,7 +20,7 @@ uv pip install -e .
 
 ## Configuration
 
-Go [tidbcloud.com](tidbcloud.com) to create a free TiDB database cluster
+Go [tidbcloud.com](https://tidbcloud.com) to create a free TiDB database cluster
 
 Configuration can be provided through environment variables, or using .env:
 - `TIDB_HOST` - TiDB host address, e.g. 'gateway01.us-east-1.prod.aws.tidbcloud.com'
