@@ -50,3 +50,21 @@ Config Claude Desktop, [HOWTO](https://modelcontextprotocol.io/quickstart/user)
   }
 }
 ```
+
+
+If you're running mcp-server-tidb in WSL, the `claude_desktop_config.json` should look like this:
+
+```
+{
+	"mcpServers": {
+		"tool-with-env-vars": {
+			"command": "wsl.exe",
+			"args": [
+				"bash",
+				"-c",
+				"/path/to/uv --directory /path/to/mcp-server-tidb run python /path/to/mcp-server-tidb/src/main.py"
+			]
+		}
+	}
+}
+
