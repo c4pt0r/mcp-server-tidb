@@ -14,6 +14,7 @@ git clone https://github.com/c4pt0r/mcp-server-tidb
 cd mcp-server-tidb
 
 # Install the package and dependencies using uv
+uv venv
 uv pip install -e .
 ```
 
