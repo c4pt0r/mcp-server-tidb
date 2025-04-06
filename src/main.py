@@ -72,7 +72,7 @@ def db_query(ctx: Context, db_name: str, sql: str) -> list[dict]:
 def show_create_table(ctx: Context, db_name: str, table: str) -> str:
     db : DB = ctx.request_context.lifespan_context.db
     try:
-        sql = db.query_one(f"SHOW CREATE TABLE {table}")
+        sql = db.query_one(f"SHOW CREATE TABLE {db_name}.{table}")
         return sql[1]
     except Exception as e:
         log.error(f"Error showing create table: {e}")
