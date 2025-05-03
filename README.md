@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/c4pt0r-mcp-server-tidb-badge.png)](https://mseep.ai/app/c4pt0r-mcp-server-tidb)
+
 # mcp-server-tidb
 
 MCP server implementation for TiDB (serverless) database.
